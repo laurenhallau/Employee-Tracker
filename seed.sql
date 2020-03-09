@@ -1,0 +1,21 @@
+USE employees;
+
+INSERT INTO department (department_name) VALUES ('');
+INSERT INTO department (department_name) VALUES ('');
+INSERT INTO department (department_name) VALUES ('');
+INSERT INTO department (department_name) VALUES ('');
+INSERT INTO department (department_name) VALUES ('');
+INSERT INTO department (department_name) VALUES ();
+INSERT INTO role (role_title, role_salary, department_id) VALUES ('',  , );
+INSERT INTO role (role_title, role_salary, department_id) VALUES ('',  , );
+INSERT INTO role (role_title, role_salary, department_id) VALUES ('', , );
+INSERT INTO role (role_title, role_salary, department_id) VALUES ('', , );
+INSERT INTO role (role_title, role_salary, department_id) VALUES ('', , );
+INSERT INTO role (role_title, role_salary, department_id) VALUES ('', , );
+INSERT INTO employee (first_name, last_name, role_id) VALUES ('', '', );
+INSERT INTO employee (first_name, last_name, role_id) VALUES ('', '', );
+INSERT INTO employee (first_name, last_name, role_id) VALUES ('', '', );
+INSERT INTO employee (first_name, last_name, role_id) VALUES ('', '', );
+INSERT INTO employee (first_name, last_name, role_id) VALUES ('', '', );
+INSERT INTO employee (first_name, last_name, role_id) VALUES ('', '', );
+INSERT INTO employee (first_name, last_name, role_id) VALUES ('', '', );
