@@ -19,7 +19,7 @@ connection.connect(function (err) {
     banner();
 });
 
-//Pulled from trilogy
+// Pulled from trilogy
 const banner = () => {
     console.log(" ____________________________________________________");
     console.log("|                                                   |");
