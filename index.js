@@ -21,6 +21,8 @@ connection.connect(function (err) {
 //function for inquirer to prompt
 startSearch();
 
+let roles;
+
 // Inquirer prompt function
 function startSearch() {
     inquirer
@@ -35,6 +37,8 @@ function startSearch() {
             "Add Employee",
             "Add Department",
             "Add Role",
+            "Update Employee Roles",
+            // "Delete Employee",
             "Exit"
         ]
     }).then(answers => {
@@ -61,7 +65,10 @@ function startSearch() {
                 break; 
             case "Add Role":
                 addRole();
-                break;    
+                break;   
+            case "Update Employee Role":
+                updateRole();
+                break;        
             case "Exit":
                 connection.end();
                 break;
@@ -182,7 +189,7 @@ function addRole() {
             {
               type: 'list',
               name: 'department',
-              message: 'Which department is the new role belongs?',
+              message: 'Which department does the new role belong?',
               choices: array
             }];
         
@@ -192,7 +199,85 @@ function addRole() {
                 if (err) throw err;
                 console.log("The role has been added.");
                 startSearch();
-            });//End Second Query
-          });//End Inquirer then
-        });//End First Query
+            });
+          });
+        });
 };
+
+const updateRole = () => {
+    let roles;
+    let employee;
+    let roleCall = [];
+    var query = "SELECT employee_id, first_name, last_name, CONCAT_WS(' ', first_name, last_name) AS employees FROM employee";
+    console.log(roles)
+    connection.query(query, function (err, res) {
+        if (err) 
+            throw err;
+            console.log(res)
+        employee = res;
+        //Build an array of Current Titles and Title ID's 
+        var query_two = "SELECT role_id, role_title FROM role";
+        connection.query(query_two, function (err, res) {
+            if (err) throw err;
+            roles = res;
+            console.log(roles)
+            console.log(roles.length);
+            //Create array of roles for user to pick from
+            
+            //Build object array of role titles for user to select from
+            for (i = 0; i < roles.length; i++) {
+                roleCall.push(Object.values(roles[i].role_title).join(""));
+            };//End for loop
+            console.log(roleCall)
+    
+    console.log(employee)
+    let currentEmployees = [];
+    
+    
+    //Build list of employees for user to select from
+    for (i = 0; i < employee.length; i++) {
+      currentEmployees.push(Object.values(employee[i].employees).join(""));
+    };
+    //Build list of roles for user to select from
+    for (i = 0; i < roles.length; i++) {
+      roleCall.push(Object.values(roles[i].role_title).join(""));
+    };
+    //Prompt user for which employee and role need to be updated
+    inquirer.prompt([
+      {
+        message: "Which employee's role do you want to update?",
+        name: "employee",
+        type: "list",
+        choices: currentEmployees
+      },
+      {
+        message: "What is the employee's role?",
+        name: "title",
+        type: "list",
+        choices: roleCall
+      }
+    ]).then((res) => {
+  
+      let employee_id;
+      let role_id;
+      //Find role id based off of role name
+      for (i = 0; i < roles.length; i++) {
+        if (roles[i].role_title === res.title) {
+          role_id = roles[i].role_id;
+        };
+      };
+      //Find employee id based of of employee name
+      for (i = 0; i < employee.length; i++) {
+        if (employee[i].employees === res.employee) {
+          employee_id = employee[i].employee_id;
+        };
+      };
+      var query = ("UPDATE employee SET role_id = ? WHERE employee_id = ?");
+      connection.query(query, [role_id, employee_id], function (err, res) {
+        if (err) throw err;
+        startSearch();
+      });//End if
+    });//ENd then
+});//End query_two
+});//End First Query
+};//End Update Role
