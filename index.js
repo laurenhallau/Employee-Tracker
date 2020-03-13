@@ -59,9 +59,9 @@ function startSearch() {
             case "Add Department":
                 addDepartment();
                 break; 
-            // case "Add Role":
-            //     addRole();
-            //     break;    
+            case "Add Role":
+                addRole();
+                break;    
             case "Exit":
                 connection.end();
                 break;
@@ -159,4 +159,40 @@ function addDepartment() {
                 startSearch();
             })
         })
+};
+
+function addRole() {
+    //Build an array of role choices
+    let array = [];
+    var query = "SELECT department_id as value, department_name as name FROM department";
+    connection.query(query, function (err, res) {
+        if (err) throw err;
+        array = JSON.parse(JSON.stringify(res)); 
+        var questions = [
+            {
+              type: "input",
+              name: "title",
+              message: "What is the name of the new role?"
+            },
+            {
+              type: "input",
+              name: "salary",
+              message: "What is the salary of this new role?"
+            },
+            {
+              type: 'list',
+              name: 'department',
+              message: 'Which department is the new role belongs?',
+              choices: array
+            }];
+        
+        inquirer.prompt(questions).then(res => {
+            const query = "INSERT INTO role (role_title, role_salary, department_id) VALUES (?, ?, ?)";
+            connection.query(query, [res.title, res.salary, res.department], function (err, res) {
+                if (err) throw err;
+                console.log("The role has been added.");
+                startSearch();
+            });//End Second Query
+          });//End Inquirer then
+        });//End First Query
 };
