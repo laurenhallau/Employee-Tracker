@@ -19,5 +19,7 @@ CREATE TABLE employee (
     employee_id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR (30) NOT NULL,
     last_name VARCHAR (30) NOT NULL,
-    role_id INT NOT NULL
+    role_id INT NOT NULL,
+    CONSTRAINT fk_department FOREIGN KEY (department_id) REFERENCES department(department_id) ON DELETE CASCADE
+
 );

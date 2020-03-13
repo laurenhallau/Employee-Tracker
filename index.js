@@ -53,12 +53,18 @@ function startSearch() {
                 byRole();
                 startSearch();   
                 break;
-            // case "Add Employee":
-            //     addEmployee();
-            //     break; 
+            case "Add Employee":
+                addEmployee();
+                break; 
             case "Add Department":
                 addDepartment();
-                break;   
+                break; 
+            // case "Add Role":
+            //     addRole();
+            //     break;    
+            case "Exit":
+                connection.end();
+                break;
         }
     })
 }
@@ -87,12 +93,57 @@ function byRole(){
         startSearch();
     })
 };
-// function addEmployee(){
-//     connection.query("SELECT * FROM employee", function(err, res) {
-//         console.log(err, res);
-//         fo
-//     })
-// }
+function addEmployee () {
+    
+    let id;
+    //Build an array of Current Titles and Title ID's 
+    var query = "SELECT role_id, role_title FROM role";
+    
+    connection.query(query, function (err, res) {
+        roles = res;
+        //Create array of roles for user to pick from
+        let roleCall = [];
+        //Build object array of role titles for user to select from
+        for (i = 0; i < roles.length; i++) {
+            roleCall.push(Object.values(roles[i].role_title).join(""));
+        };//End for loop
+        
+        inquirer.prompt([
+        {
+            message: "What is the employee's first name?",
+            name: "first_name",
+            type: "input"
+        },
+        {
+            message: "What is the employee's last name?",
+            name: "last_name",
+            type: "input"
+        },
+        {
+            message: "What is the employee's role?",
+            name: "role_title",
+            //Use roleCall array to provide role choices
+            choices: roleCall, 
+            type: "list"
+        }
+        ]).then((res) => {
+    
+    for (i = 0; i < roles.length; i++) {
+        if (roles[i].role_title === res.role_title) {
+            id = roles[i].role_id;
+        };
+    };
+    var sql = "INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)";
+    connection.query(sql, [res.first_name, res.last_name, id], function (err) {
+        if (err) throw err;
+        // Call primary menu.
+        byEmployees();
+        startSearch();
+      });//End of query connection
+    });//connection then
+    });//End of first query
+  };//end add employee
+
 function addDepartment() {
     inquirer.prompt(
         {
@@ -108,4 +159,4 @@ function addDepartment() {
                 startSearch();
             })
         })
-}
+};
