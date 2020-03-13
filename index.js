@@ -49,6 +49,10 @@ function startSearch() {
                byDepartments();
                startSearch();   
                break; 
+            case "View Roles":
+                byRole();
+                startSearch();   
+                break;
         }
     })
 }
@@ -63,6 +67,14 @@ function byEmployees(){
 };
 function byDepartments(){
     var sql = "SELECT * FROM department ";
+    connection.query(sql, function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        startSearch();
+    })
+};
+function byRole(){
+    var sql = "SELECT * FROM role ";
     connection.query(sql, function(err, res) {
         if (err) throw err;
         console.table(res);
