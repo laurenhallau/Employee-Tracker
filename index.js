@@ -16,24 +16,56 @@ var connection = mysql.createConnection({
 // Error for failed connection
 connection.connect(function (err) {
     if (err) throw err;
-    banner();
-});
+}); console.log("You're connected!");
 
-// Pulled from trilogy
-const banner = () => {
-    console.log(" ____________________________________________________");
-    console.log("|                                                   |");
-    console.log("|  _____                  _                         |");
-    console.log("| |  ___|_ ___  __  _ ___| | ___  _   _  ___   ___  |");
-    console.log("| |  _| | `_  '_  |  _   | |/ _ '| | | |/ _ ' / _ ' |");
-    console.log("| | |___| | | | | | |_|  | | |_| | | | |  __/|  __/ |");
-    console.log("| |_____|_| |_| |_| ____/|_|'___/|___| |____||____| |");
-    console.log("|                 |_|             |___/             |");
-    console.log("|  __  __                                           |");
-    console.log("| |  '/  | ____ _ __   ____  ___   ___   _ __       |");
-    console.log("| | |'/| |/ _' | '_ ' / _  |/ _ ' / _ ' | ,__|      |");
-    console.log("| | |  | | |_| | | | | |_| | |_| |  __/ | |         |");
-    console.log("| |_|  |_||__,_|_| |_|___,_|___, |____|_|_|         |");
-    console.log("|                           |___/                   |");;
-    console.log("`---------------------------------------------------'");
+//function for inquirer to prompt
+startSearch();
+
+// Inquirer prompt function
+function startSearch() {
+    inquirer
+    .prompt({
+        name: "action",
+        type: "list",
+        message: "What would you like to do?",
+        choices: [
+            "View Employees",
+            "View Departments",
+            "View Roles",
+            "Add Employee",
+            "Add Deparment",
+            "Add Role",
+            "Exit"
+        ]
+    }).then(answers => {
+        //starting switch statements
+        switch (answers.action) {
+            //start new case
+            case "View Employees":
+              byEmployees();
+              startSearch();
+              break; 
+            case "View Departments":
+               byDepartments();
+               startSearch();   
+               break; 
+        }
+    })
+}
+
+function byEmployees(){
+    var sql = "SELECT * FROM employee";
+    connection.query(sql, function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        startSearch();
+    })
 };
+function byDepartments(){
+    var sql = "SELECT * FROM department ";
+    connection.query(sql, function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        startSearch();
+    })
+}
