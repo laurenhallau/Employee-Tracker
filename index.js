@@ -33,7 +33,7 @@ function startSearch() {
             "View Departments",
             "View Roles",
             "Add Employee",
-            "Add Deparment",
+            "Add Department",
             "Add Role",
             "Exit"
         ]
@@ -53,6 +53,12 @@ function startSearch() {
                 byRole();
                 startSearch();   
                 break;
+            // case "Add Employee":
+            //     addEmployee();
+            //     break; 
+            case "Add Department":
+                addDepartment();
+                break;   
         }
     })
 }
@@ -80,4 +86,26 @@ function byRole(){
         console.table(res);
         startSearch();
     })
+};
+// function addEmployee(){
+//     connection.query("SELECT * FROM employee", function(err, res) {
+//         console.log(err, res);
+//         fo
+//     })
+// }
+function addDepartment() {
+    inquirer.prompt(
+        {
+            name: 'department',
+            type: 'input',
+            message: "Which department would you like to add?"
+        }).then(function (res) {
+            var sql = "INSERT INTO department (department_name) VALUES (?)";
+            connection.query(sql, [res.department], function(err, res) {
+                if (err) throw err;
+                console.log("Department was added successfully!");
+                byDepartments();
+                startSearch();
+            })
+        })
 }
