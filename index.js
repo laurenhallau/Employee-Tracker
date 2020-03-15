@@ -36,8 +36,7 @@ function startSearch() {
             "Add Employee",
             "Add Department",
             "Add Role",
-            "Update Employee Roles",
-            // "Delete Employee",
+            "Update Role",
             "Exit"
         ]
     }).then(answers => {
@@ -62,9 +61,9 @@ function startSearch() {
             case "Add Role":
                 addRole();
                 break;   
-            case "Update Employee Role":
+            case "Update Role":
                 updateRole();
-                break;        
+                break;           
             case "Exit":
                 connection.end();
                 break;
@@ -199,69 +198,96 @@ function addRole() {
           });
         });
 };
-function updateRole () {
-    let roles;
-    let employee;
-    let roleCall = [];
-    let currentEmployees = [];
-    var query = "SELECT employee_id, first_name, last_name, CONCAT_WS(' ', first_name, last_name) AS employees FROM employee";
-    connection.query(query, function (err, res) {
-        if (err) throw err;
-        employee = res;
-        //Build an array of Current Titles and Title ID's 
-        var query_two = "SELECT role_id, role_title FROM role";
-        connection.query(query_two, function (err, res) {
-            if (err) throw err;
-            roles = res;
+
+// function updateRole () {
+//     let roles;
+//     let employee;
+//     let roleCall = [];
+//     let currentEmployees = [];
+//     var query = "SELECT employee_id, first_name, last_name, CONCAT_WS(' ', first_name, last_name) AS employees FROM employee";
+//     connection.query(query, function (err, res) {
+//         if (err) throw err;
+//         employee = res;
+//         //Build an array of Current Titles and Title ID's 
+//         var query_two = "SELECT role_id, role_title FROM role";
+//         connection.query(query_two, function (err, res) {
+//             if (err) throw err;
+//             roles = res;
             
-            //Build object array of role titles for user to select from
-            for (i = 0; i < roles.length; i++) {
-                roleCall.push(Object.values(roles[i].role_title).join(""));
-            };
+//             //Build object array of role titles for user to select from
+//             for (i = 0; i < roles.length; i++) {
+//                 roleCall.push(Object.values(roles[i].role_title).join(""));
+//             };
    
-            //Build list of employees for user to select from
-            for (i = 0; i < employee.length; i++) {
-            currentEmployees.push(Object.values(employee[i].employees).join(""));
-        };
-            //Build list of roles for user to select from
-            for (i = 0; i < roles.length; i++) {
-            roleCall.push(Object.values(roles[i].role_title).join(""));
-        };
-        //Prompt user for which employee and role need to be updated
-        inquirer.prompt([
+//             //Build list of employees for user to select from
+//             for (i = 0; i < employee.length; i++) {
+//             currentEmployees.push(Object.values(employee[i].employees).join(""));
+//         };
+//             //Build list of roles for user to select from
+//             for (i = 0; i < roles.length; i++) {
+//             roleCall.push(Object.values(roles[i].role_title).join(""));
+//         };
+//         //Prompt user for which employee and role need to be updated
+//         inquirer.prompt([
+//         {
+//             message: "Which employee's role do you want to update?",
+//             name: "employee",
+//             type: "list",
+//             choices: currentEmployees
+//         },
+//         {
+//             message: "What is the employee's role?",
+//             name: "title",
+//             type: "list",
+//             choices: roleCall
+//         }
+//         ]).then((res) => {
+//         let employee_id;
+//         let role_id;
+//         //Find role id based off of role name
+//         for (i = 0; i < roles.length; i++) {
+//             if (roles[i].role_title === res.title) {
+//               role_id = roles[i].role_id;
+//             };
+//         };
+//       //Find employee id based of of employee name
+//         for (i = 0; i < employee.length; i++) {
+//          if (employee[i].employees === res.employee) {
+//             employee_id = employee[i].employee_id;
+//             };
+//         };
+//       var query = ("UPDATE employee SET role_id = ? WHERE employee_id = ?");
+//       connection.query(query, [role_id, employee_id], function (err, res) {
+//         if (err) throw err;
+//         startSearch();
+//       });
+//     });
+// });
+// });
+// };
+
+function updateRole() {
+    inquirer
+      .prompt([
         {
-            message: "Which employee's role do you want to update?",
-            name: "employee",
-            type: "list",
-            choices: currentEmployees
+          type: "input",
+          message: "What is the new role ID that you would like to assign?",
+          name: "updateRole"
         },
         {
-            message: "What is the employee's role?",
-            name: "title",
-            type: "list",
-            choices: roleCall
+          type: "input",
+          message:
+            "What is the ID number of the employee that you would like to update?",
+          name: "updateId"
         }
-        ]).then((res) => {
-        let employee_id;
-        let role_id;
-        //Find role id based off of role name
-        for (i = 0; i < roles.length; i++) {
-            if (roles[i].role_title === res.title) {
-              role_id = roles[i].role_id;
-            };
-        };
-      //Find employee id based of of employee name
-        for (i = 0; i < employee.length; i++) {
-         if (employee[i].employees === res.employee) {
-            employee_id = employee[i].employee_id;
-            };
-        };
-      var query = ("UPDATE employee SET role_id = ? WHERE employee_id = ?");
-      connection.query(query, [role_id, employee_id], function (err, res) {
-        if (err) throw err;
-        startSearch();
+      ])
+      .then(function(answer) {
+        connection.query("UPDATE employee SET role_id = ? WHERE role_id = ?", [answer.updateRole, answer.updateId], function(err, res) {
+            if (err) throw err;
+            startSearch();
+          }
+        );
       });
-    });
-});
-});
-};
+  }
+
+  
