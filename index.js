@@ -67,6 +67,7 @@ function startSearch() {
                 break;        
             case "Exit":
                 connection.end();
+                break;
         }
     })
 }
