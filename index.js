@@ -282,8 +282,9 @@ function updateRole() {
         }
       ])
       .then(function(answer) {
-        connection.query("UPDATE employee SET role_id = ? WHERE role_id = ?", [answer.updateRole, answer.updateId], function(err, res) {
+        connection.query("UPDATE employee SET role_id = ? WHERE employee_id = ?", [answer.updateRole, answer.updateId], function(err, res) {
             if (err) throw err;
+            console.log("Update of role successful!");
             startSearch();
           }
         );
